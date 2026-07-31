@@ -137,6 +137,20 @@ input[type=file]{display:none;}
 }
 .tab.active{background:var(--amber); color:#1a1508; border-color:var(--amber);}
 
+.search-row{display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:9px 12px; margin-bottom:12px;}
+.search-row input{flex:1; background:none; border:none; outline:none; color:var(--cream); font-size:14px; min-width:0;}
+.search-row input::placeholder{color:var(--muted);}
+.search-ic{color:var(--muted); font-size:14px; flex-shrink:0;}
+
+.filter-row{display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;}
+.filter-chip{
+  flex-shrink:0; padding:6px 13px; border-radius:999px;
+  font-size:12px; font-weight:600;
+  background:var(--surface-2); color:var(--muted);
+  border:1px solid var(--line);
+}
+.filter-chip.active{background:var(--amber); color:#1a1508; border-color:var(--amber);}
+
 .lib-scroll{flex:1; overflow-y:auto; padding-bottom:100px; -webkit-overflow-scrolling:touch;}
 .pane{display:none;}
 .pane.active{display:block;}
@@ -216,24 +230,43 @@ input[type=file]{display:none;}
 .player-top .chevron{font-size:22px; color:var(--cream);}
 .player-top .label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em;}
 
+.view-toggle{display:flex; gap:8px; justify-content:center; margin:2px 0 12px;}
+.view-opt{padding:7px 16px; border-radius:999px; font-size:12.5px; font-weight:600; background:var(--surface-2); color:var(--muted); border:1px solid var(--line);}
+.view-opt.active{background:var(--amber); color:#1a1508; border-color:var(--amber);}
+
 .art-wrap{
   flex:1; display:flex; align-items:center; justify-content:center;
   min-height:0; padding:6px 0 18px;
 }
+.cover-view{display:none; width:min(78vw, 340px);}
+.cover-view.active{display:block;}
+.cover-art{
+  width:100%; aspect-ratio:1/1; border-radius:20px;
+  background:var(--surface-2); border:1px solid var(--line);
+  overflow:hidden; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 16px 28px rgba(0,0,0,.45);
+}
+.cover-img{width:100%; height:100%; object-fit:cover; display:none;}
+.cover-img.has-art{display:block;}
+.cover-fallback{font-size:64px; color:var(--amber-dim);}
+.cover-fallback.has-art{display:none;}
+
 .turntable-svg{
-  width:min(88vw, 360px); height:auto;
+  display:none;
+  width:min(80vw, 320px); height:auto;
   overflow:visible;
   filter:drop-shadow(0 16px 28px rgba(0,0,0,.45));
 }
+.turntable-svg.active{display:block;}
 #platter-group{
-  transform-origin:230px 150px;
+  transform-origin:160px 172px;
   animation:spin 12s linear infinite paused;
 }
 #platter-group.spinning{animation-play-state:running;}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 #tonearm-group{
-  transform-origin:337px 76px;
-  transform:rotate(-36deg);
+  transform-origin:252px 52px;
+  transform:rotate(-34deg);
   transition:transform .5s cubic-bezier(.4,0,.2,1);
 }
 #tonearm-group.playing{transform:rotate(0deg);}
@@ -247,7 +280,8 @@ input[type=file]{display:none;}
 
 .track-info{text-align:center; padding:0 6px 6px;}
 .track-info .title{font-size:20px; font-weight:700; letter-spacing:-0.01em; margin:0 0 4px;}
-.track-info .artist{font-size:14.5px; color:var(--amber); margin:0 0 2px; font-weight:600;}
+.track-info .artist{font-size:14.5px; color:var(--amber); margin:0 0 2px; font-weight:600; display:inline-block; cursor:pointer; user-select:text; -webkit-user-select:text; border-bottom:1px dashed var(--amber-dim); padding-bottom:1px;}
+.track-info .artist:active{opacity:0.7;}
 .track-info .album{font-size:12.5px; color:var(--muted); margin:0;}
 
 .timeline{padding:6px 0 2px;}
@@ -390,7 +424,18 @@ svg{display:block;}
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
         <button class="icon-btn" id="settings-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H4a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H10a1.65 1.65 0 001-1.51V4a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V10c.63.24 1.51.5 1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="6.2" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="2.3" stroke="currentColor" stroke-width="1.8"/>
+            <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="1.7"/>
+              <line x1="18.06" y1="8.5" x2="20.92" y2="6.85"/>
+              <line x1="18.06" y1="15.5" x2="20.92" y2="17.15"/>
+              <line x1="12" y1="19" x2="12" y2="22.3"/>
+              <line x1="5.94" y1="15.5" x2="3.08" y2="17.15"/>
+              <line x1="5.94" y1="8.5" x2="3.08" y2="6.85"/>
+            </g>
+          </svg>
         </button>
       </div>
     </div>
@@ -412,8 +457,19 @@ svg{display:block;}
       <div class="tab" data-pane="pane-playlists">Playlists</div>
     </div>
 
+    <div class="search-row">
+      <span class="search-ic">🔍</span>
+      <input type="text" id="lib-search" placeholder="Buscar canciones o artistas">
+    </div>
+
     <div class="lib-scroll">
-      <div class="pane active" id="pane-all"></div>
+      <div class="pane active" id="pane-all">
+        <div class="filter-row" id="all-sort-row">
+          <div class="filter-chip active" data-sort="az">A–Z</div>
+          <div class="filter-chip" data-sort="recent">Agregadas recientemente</div>
+        </div>
+        <div id="all-rows"></div>
+      </div>
       <div class="pane" id="pane-favorites"></div>
       <div class="pane" id="pane-artists"></div>
       <div class="pane" id="pane-albums"></div>
@@ -442,54 +498,63 @@ svg{display:block;}
       <div class="chevron" id="player-back">⌄</div>
       <div class="label" id="player-context-lbl">reproduciendo</div>
       <button class="icon-btn" id="player-gear-btn" style="width:32px;height:32px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H4a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H10a1.65 1.65 0 001-1.51V4a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V10c.63.24 1.51.5 1.51 1z" stroke="currentColor" stroke-width="1.8"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.1"/><circle cx="12" cy="12" r="2.1"/><circle cx="12" cy="19" r="2.1"/></svg>
       </button>
     </div>
 
+    <div class="view-toggle">
+      <button class="view-opt active" data-view="cover">Carátula</button>
+      <button class="view-opt" data-view="turntable">Tocadiscos</button>
+    </div>
+
     <div class="art-wrap">
-      <svg class="turntable-svg" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <div class="cover-view active" id="cover-view">
+        <div class="cover-art">
+          <img id="cover-art-img" class="cover-img" alt="">
+          <div id="cover-fallback" class="cover-fallback">♪</div>
+        </div>
+      </div>
+
+      <svg class="turntable-svg" id="turntable-view" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
-          <clipPath id="labelClip"><ellipse cx="230" cy="150" rx="52" ry="38"/></clipPath>
+          <clipPath id="labelClip"><circle cx="160" cy="172" r="40"/></clipPath>
         </defs>
 
-        <!-- base / plinth -->
-        <polygon points="55,190 205,258 385,175 235,110" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
-        <polygon points="55,190 205,258 205,278 55,210" fill="#0e0c09"/>
-        <polygon points="205,258 385,175 385,195 205,278" fill="#0e0c09"/>
-        <ellipse cx="90" cy="203" rx="10" ry="6" fill="#0e0c09"/>
-        <ellipse cx="90" cy="211" rx="10" ry="6" fill="#0e0c09"/>
-        <ellipse cx="350" cy="185" rx="10" ry="6" fill="#0e0c09"/>
-        <ellipse cx="350" cy="193" rx="10" ry="6" fill="#0e0c09"/>
+        <!-- base plate: flat, top-down view -->
+        <rect x="8" y="8" width="304" height="304" rx="22" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="32" cy="32" r="3" fill="var(--line)"/>
+        <circle cx="288" cy="32" r="3" fill="var(--line)"/>
+        <circle cx="32" cy="288" r="3" fill="var(--line)"/>
+        <circle cx="288" cy="288" r="3" fill="var(--line)"/>
 
-        <!-- pitch fader -->
-        <rect x="290" y="130" width="14" height="55" rx="4" fill="var(--surface-2)" stroke="var(--line)"/>
-        <line x1="297" y1="136" x2="297" y2="179" stroke="var(--line)" stroke-width="1"/>
-        <rect class="pitch-handle" x="286" y="152" width="22" height="7" rx="2" fill="var(--amber-dim)"/>
+        <!-- pitch fader (flat) -->
+        <rect x="270" y="120" width="14" height="90" rx="4" fill="var(--surface-2)" stroke="var(--line)"/>
+        <line x1="277" y1="126" x2="277" y2="204" stroke="var(--line)" stroke-width="1"/>
+        <rect class="pitch-handle" x="266" y="155" width="22" height="7" rx="2" fill="var(--amber-dim)"/>
 
         <!-- start button + light -->
-        <circle cx="110" cy="150" r="9" fill="var(--surface-2)" stroke="var(--line)"/>
-        <circle cx="110" cy="120" r="5" fill="var(--rust)" opacity="0.85"/>
+        <circle cx="38" cy="256" r="9" fill="var(--surface-2)" stroke="var(--line)"/>
+        <circle cx="38" cy="232" r="5" fill="var(--rust)" opacity="0.85"/>
 
-        <!-- platter (vinyl) -->
+        <!-- platter (vinyl), true top view: concentric circles, no perspective -->
         <g id="platter-group">
-          <ellipse cx="230" cy="150" rx="148" ry="108" fill="var(--surface-2)" stroke="var(--line)" stroke-width="2"/>
-          <ellipse cx="230" cy="150" rx="148" ry="108" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
-          <ellipse cx="230" cy="150" rx="128" ry="93" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
-          <ellipse cx="230" cy="150" rx="108" ry="79" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
-          <ellipse cx="230" cy="150" rx="88" ry="64" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
-          <ellipse cx="230" cy="150" rx="68" ry="50" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
-          <ellipse cx="230" cy="150" rx="55" ry="40" fill="var(--surface)" stroke="var(--amber-dim)" stroke-width="2"/>
-          <text id="label-fallback" x="230" y="160" text-anchor="middle" font-size="30" fill="var(--amber-dim)">♪</text>
-          <image id="album-art-img" x="178" y="112" width="104" height="76" clip-path="url(#labelClip)" preserveAspectRatio="xMidYMid slice"></image>
-          <circle cx="230" cy="150" r="4" fill="var(--bg)" stroke="var(--amber-dim)" stroke-width="1.5"/>
+          <circle cx="160" cy="172" r="118" fill="var(--surface-2)" stroke="var(--line)" stroke-width="2"/>
+          <circle cx="160" cy="172" r="102" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <circle cx="160" cy="172" r="86" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <circle cx="160" cy="172" r="70" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <circle cx="160" cy="172" r="54" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <circle cx="160" cy="172" r="42" fill="var(--surface)" stroke="var(--amber-dim)" stroke-width="2"/>
+          <text id="label-fallback" x="160" y="182" text-anchor="middle" font-size="28" fill="var(--amber-dim)">♪</text>
+          <image id="album-art-img" x="120" y="132" width="80" height="80" clip-path="url(#labelClip)" preserveAspectRatio="xMidYMid slice"></image>
+          <circle cx="160" cy="172" r="4" fill="var(--bg)" stroke="var(--amber-dim)" stroke-width="1.5"/>
         </g>
 
-        <!-- tonearm -->
+        <!-- tonearm, top view -->
         <g id="tonearm-group">
-          <circle cx="337" cy="76" r="15" fill="var(--surface-2)" stroke="var(--amber-dim)" stroke-width="2"/>
-          <rect x="330" y="55" width="14" height="14" rx="3" fill="var(--surface)" stroke="var(--line)"/>
-          <path d="M337,76 C 305,88 268,102 300,125" fill="none" stroke="var(--surface-2)" stroke-width="7" stroke-linecap="round"/>
-          <g transform="translate(300,125) rotate(-18)">
+          <circle cx="252" cy="52" r="15" fill="var(--surface-2)" stroke="var(--amber-dim)" stroke-width="2"/>
+          <rect x="245" y="30" width="14" height="14" rx="3" fill="var(--surface)" stroke="var(--line)"/>
+          <line x1="252" y1="52" x2="184" y2="132" stroke="var(--surface-2)" stroke-width="7" stroke-linecap="round"/>
+          <g transform="translate(184,132) rotate(48)">
             <rect x="-4" y="-6" width="20" height="12" rx="2" fill="var(--amber)"/>
             <rect id="headshell-tip" x="14" y="-2" width="5" height="6" rx="1" fill="var(--rust)"/>
           </g>
@@ -545,31 +610,34 @@ svg{display:block;}
       <div class="sheet-tabs">
         <div class="sheet-tab active" data-spane="spane-artist">Artista</div>
         <div class="sheet-tab" data-spane="spane-similar">Similares</div>
+        <div class="sheet-tab" data-spane="spane-history">Historial</div>
       </div>
       <div class="sheet-body">
         <div class="sheet-pane active" id="spane-artist"></div>
         <div class="sheet-pane" id="spane-similar"></div>
+        <div class="sheet-pane" id="spane-history"></div>
       </div>
     </div>
   </div>
 
-  <!-- SETTINGS SHEET (biblioteca) -->
+  <!-- SETTINGS SHEET -->
   <div class="sheet-backdrop" id="settings-backdrop">
     <div class="sheet">
       <div class="sheet-handle"></div>
       <div class="sheet-head"><h3>Ajustes</h3><div class="sheet-close" id="settings-close">✕</div></div>
       <div class="sheet-body">
         <div class="toggle-row">
-          <div class="lbl"><b>Recordar mis playlists</b><span>Guarda tus playlists en este teléfono entre sesiones</span></div>
-          <div class="switch on" id="remember-switch"></div>
+          <div class="lbl"><b>Mezcla al cambiar de canción</b><span>Aplica un fundido de salida y entrada entre canciones</span></div>
+          <div class="switch" id="mezcla-switch"></div>
         </div>
-        <div class="toggle-row">
-          <div class="lbl"><b>Reanudar donde quedé</b><span>Vuelve a la última canción al abrir Bobina</span></div>
-          <div class="switch on" id="resume-switch"></div>
+        <div class="field-label">Duración del fundido</div>
+        <div class="filter-row" id="mezcla-interval-row">
+          <div class="filter-chip" data-sec="2">2s</div>
+          <div class="filter-chip" data-sec="4">4s</div>
+          <div class="filter-chip" data-sec="6">6s</div>
+          <div class="filter-chip" data-sec="8">8s</div>
         </div>
-        <div class="field-label">Acerca de la conexión con YouTube Music</div>
-        <div class="similar-note">Este reproductor funciona 100% con tus archivos locales. No inicia sesión con Google ni pide recomendaciones en línea: la pestaña "Similares" se basa solo en tu propia biblioteca. Copia el enlace de una canción abajo si quieres buscarla luego en YouTube Music.</div>
-        <button class="btn secondary" id="wipe-btn" style="width:100%; justify-content:center; margin-top:6px;">Borrar playlists guardadas</button>
+        <button class="btn secondary" id="wipe-btn" style="width:100%; justify-content:center; margin-top:14px;">Borrar playlists, favoritas e historial guardados</button>
       </div>
     </div>
   </div>
@@ -667,8 +735,15 @@ let repeatMode = 'off';        // off | all | one
 let currentContextLabel = 'Todas';
 let playlists = storage.get('bobina_playlists', []); // {id, name, keys:[]}
 let favorites = storage.get('bobina_favorites', []); // array de keys
+let playHistory = storage.get('bobina_history', []); // últimas 10 keys reproducidas, más reciente primero
+let allSortMode = storage.get('bobina_sort_mode', 'az'); // az | recent
+let mezclaOn = storage.get('bobina_mezcla_on', false);
+let mezclaInterval = storage.get('bobina_mezcla_interval', 4);
 let quickMenuSongKey = null;
 let deleteTargetKey = null;
+let fadeTimer = null;
+let didFadeOut = false;
+let trackJustChanged = false;
 
 const audio = document.getElementById('audio');
 
@@ -860,12 +935,14 @@ function handleFiles(e){
         title: id3.title || nameGuess,
         artist: id3.artist || 'Artista desconocido',
         album: id3.album || 'Álbum desconocido',
-        genre: id3.genre || 'Sin género'
+        genre: id3.genre || 'Sin género',
+        addedAt: Date.now()
       };
       const song = {
         key,
         url: URL.createObjectURL(file),
         title: record.title, artist: record.artist, album: record.album, genre: record.genre,
+        addedAt: record.addedAt,
         picture: id3.pictureBlob ? URL.createObjectURL(id3.pictureBlob) : null
       };
       if(!songs.some(s=>s.key===key)) songs.push(song);
@@ -895,12 +972,14 @@ function init(){
       key: r.key,
       url: URL.createObjectURL(r.blob),
       title: r.title, artist: r.artist, album: r.album, genre: r.genre,
+      addedAt: r.addedAt || 0,
       picture: r.pictureBlob ? URL.createObjectURL(r.pictureBlob) : null
     }));
     songs.sort((a,b)=>a.title.localeCompare(b.title,'es'));
     document.getElementById('shuffle-count-lbl').textContent = songs.length+' canciones en tu biblioteca';
     renderAll();
     goTo('screen-library');
+    restoreLastSession();
   }).catch(()=>{ /* si IndexedDB no está disponible, simplemente se queda en la bienvenida */ });
 }
 init();
@@ -919,13 +998,24 @@ function songRowHTML(song, idx){
     </div>`;
 }
 
+function getAllSortedIndexes(){
+  const idxs = songs.map((_,i)=>i);
+  if(allSortMode==='recent'){
+    idxs.sort((a,b)=> (songs[b].addedAt||0)-(songs[a].addedAt||0));
+  } else {
+    idxs.sort((a,b)=> songs[a].title.localeCompare(songs[b].title,'es'));
+  }
+  return idxs;
+}
+
 function renderAll(){
   // Todas
-  const paneAll = document.getElementById('pane-all');
+  const allRows = document.getElementById('all-rows');
   if(songs.length===0){
-    paneAll.innerHTML = `<div class="empty-state">Aún no has agregado canciones.<br>Toca "+" arriba para seleccionarlas.</div>`;
+    allRows.innerHTML = `<div class="empty-state">Aún no has agregado canciones.<br>Toca "+" arriba para seleccionarlas.</div>`;
   } else {
-    paneAll.innerHTML = songs.map((s,i)=>songRowHTML(s,i)).join('');
+    const idxs = getAllSortedIndexes();
+    allRows.innerHTML = idxs.map(i=>songRowHTML(songs[i], i)).join('');
   }
 
   // Favoritas
@@ -996,16 +1086,17 @@ function openPlaylistView(plid){
   const pl = playlists.find(p=>p.id===plid);
   if(!pl) return;
   const idxs = pl.keys.map(k=>songs.findIndex(s=>s.key===k)).filter(i=>i>=0);
-  const pane = document.getElementById('pane-all');
+  const rowsEl = document.getElementById('all-rows');
   // reutilizamos la pestaña "Todas" en modo playlist temporal
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('pane-all').classList.add('active');
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
-  pane.classList.add('active');
+  document.getElementById('pane-all').classList.add('active');
+  document.getElementById('all-sort-row').style.display = 'none';
   if(idxs.length===0){
-    pane.innerHTML = `<div class="empty-state">Esta playlist aún no tiene canciones descargadas.<br>Usa "⋯" en una canción para agregarla.</div>`;
+    rowsEl.innerHTML = `<div class="empty-state">Esta playlist aún no tiene canciones descargadas.<br>Usa "⋯" en una canción para agregarla.</div>`;
   } else {
-    pane.innerHTML = idxs.map(i=>songRowHTML(songs[i], i)).join('');
+    rowsEl.innerHTML = idxs.map(i=>songRowHTML(songs[i], i)).join('');
   }
   attachRowHandlers();
   currentContextLabel = pl.name;
@@ -1074,7 +1165,39 @@ document.querySelectorAll('.tab').forEach(tab=>{
     document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
     document.getElementById(tab.dataset.pane).classList.add('active');
     activePlaylistQueue = null;
+    document.getElementById('all-sort-row').style.display = '';
+    if(tab.dataset.pane==='pane-all') renderAll();
     if(tab.dataset.pane==='pane-playlists') renderPlaylists();
+    const searchEl = document.getElementById('lib-search');
+    if(searchEl.value){ searchEl.value=''; searchEl.dispatchEvent(new Event('input')); }
+  });
+});
+
+/* ---------------- Filtro A-Z / Recientes en "Todas" ---------------- */
+document.querySelectorAll('#all-sort-row .filter-chip').forEach(chip=>{
+  chip.classList.toggle('active', chip.dataset.sort===allSortMode);
+  chip.addEventListener('click', ()=>{
+    allSortMode = chip.dataset.sort;
+    storage.set('bobina_sort_mode', allSortMode);
+    document.querySelectorAll('#all-sort-row .filter-chip').forEach(c=>c.classList.toggle('active', c===chip));
+    renderAll();
+  });
+});
+
+/* ---------------- Búsqueda en biblioteca ---------------- */
+document.getElementById('lib-search').addEventListener('input', (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  const activePane = document.querySelector('.pane.active');
+  if(!activePane) return;
+  activePane.querySelectorAll('.song-row').forEach(row=>{
+    const idx = parseInt(row.dataset.idx,10);
+    const song = songs[idx];
+    const match = !q || (song && (song.title.toLowerCase().includes(q) || song.artist.toLowerCase().includes(q)));
+    row.style.display = match ? '' : 'none';
+  });
+  activePane.querySelectorAll('.playlist-card').forEach(card=>{
+    const txt = card.textContent.toLowerCase();
+    card.style.display = (!q || txt.includes(q)) ? '' : 'none';
   });
 });
 
@@ -1099,28 +1222,117 @@ function shuffleQueueKeepingCurrent(){
   queueIndex = 0;
 }
 
-function loadCurrent(){
-  const song = songs[queue[queueIndex]];
-  if(!song) return;
-  audio.src = song.url;
-  document.getElementById('np-title').textContent = song.title;
-  document.getElementById('np-artist').textContent = song.artist;
-  document.getElementById('np-album').textContent = song.album;
-  document.getElementById('player-context-lbl').textContent = currentContextLabel;
+function setPlayerArt(song){
   const artImg = document.getElementById('album-art-img');
   const fallback = document.getElementById('label-fallback');
-  if(song.picture){
+  const coverImg = document.getElementById('cover-art-img');
+  const coverFallback = document.getElementById('cover-fallback');
+  if(song && song.picture){
     artImg.setAttributeNS('http://www.w3.org/1999/xlink','href', song.picture);
     artImg.classList.add('has-art');
     fallback.classList.add('has-art');
+    coverImg.src = song.picture;
+    coverImg.classList.add('has-art');
+    coverFallback.classList.add('has-art');
   } else {
     artImg.removeAttributeNS('http://www.w3.org/1999/xlink','href');
     artImg.classList.remove('has-art');
     fallback.classList.remove('has-art');
+    coverImg.removeAttribute('src');
+    coverImg.classList.remove('has-art');
+    coverFallback.classList.remove('has-art');
   }
+}
+
+function pushHistory(key){
+  playHistory = playHistory.filter(k=>k!==key);
+  playHistory.unshift(key);
+  if(playHistory.length>10) playHistory = playHistory.slice(0,10);
+  storage.set('bobina_history', playHistory);
+}
+
+async function updateOutputLabel(){
+  const el = document.getElementById('player-context-lbl');
+  let label = '🔊 Bobina';
+  try{
+    if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices){
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const outs = devices.filter(d=>d.kind==='audiooutput' && d.label);
+      if(outs.length) label = outs[0].label;
+    }
+  }catch(e){ /* sin permiso o no soportado en este navegador: se usa el genérico */ }
+  el.textContent = label;
+}
+if(navigator.mediaDevices && navigator.mediaDevices.addEventListener){
+  navigator.mediaDevices.addEventListener('devicechange', updateOutputLabel);
+}
+
+function loadCurrent(){
+  const song = songs[queue[queueIndex]];
+  if(!song) return;
+  trackJustChanged = true;
+  clearFade();
+  didFadeOut = false;
+  audio.volume = mezclaOn ? 0 : 1;
+  audio.src = song.url;
+  document.getElementById('np-title').textContent = song.title;
+  document.getElementById('np-artist').textContent = song.artist;
+  document.getElementById('np-album').textContent = song.album;
+  updateOutputLabel();
+  setPlayerArt(song);
   updateMiniPlayer(song);
   markPlayingRow(song.key);
   updatePlayerFavButton();
+  pushHistory(song.key);
+}
+
+/* ---------------- Guardar/restaurar dónde quedé (permanente, sin opción para desactivar) ---------------- */
+function saveLastPosition(){
+  if(queue.length===0 || queueIndex<0) return;
+  const song = songs[queue[queueIndex]];
+  if(!song) return;
+  storage.set('bobina_last', {key: song.key, position: audio.currentTime || 0});
+}
+setInterval(()=>{ if(!audio.paused) saveLastPosition(); }, 5000);
+
+function restoreLastSession(){
+  const last = storage.get('bobina_last', null);
+  if(!last) return;
+  const idx = songs.findIndex(s=>s.key===last.key);
+  if(idx<0) return;
+  queue = [idx];
+  queueIndex = 0;
+  currentContextLabel = 'Todas';
+  const song = songs[idx];
+  audio.src = song.url;
+  document.getElementById('np-title').textContent = song.title;
+  document.getElementById('np-artist').textContent = song.artist;
+  document.getElementById('np-album').textContent = song.album;
+  updateOutputLabel();
+  setPlayerArt(song);
+  updateMiniPlayer(song);
+  markPlayingRow(song.key);
+  updatePlayerFavButton();
+  const resumeTo = last.position || 0;
+  audio.addEventListener('loadedmetadata', function onMeta(){
+    audio.currentTime = resumeTo;
+    audio.removeEventListener('loadedmetadata', onMeta);
+  });
+}
+
+/* ---------------- Mezcla: fundido de salida/entrada entre canciones ---------------- */
+function clearFade(){ if(fadeTimer){ clearInterval(fadeTimer); fadeTimer=null; } }
+function fadeVolume(from, to, seconds, onDone){
+  clearFade();
+  const steps = Math.max(6, Math.round(seconds*8));
+  let i = 0;
+  audio.volume = from;
+  fadeTimer = setInterval(()=>{
+    i++;
+    const t = i/steps;
+    audio.volume = Math.max(0, Math.min(1, from + (to-from)*t));
+    if(i>=steps){ clearFade(); audio.volume = to; if(onDone) onDone(); }
+  }, (seconds*1000)/steps);
 }
 
 function markPlayingRow(key){
@@ -1143,11 +1355,16 @@ audio.addEventListener('play', ()=>{
   setPlayIcon(true);
   document.getElementById('platter-group').classList.add('spinning');
   document.getElementById('tonearm-group').classList.add('playing');
+  if(mezclaOn && trackJustChanged){
+    trackJustChanged = false;
+    fadeVolume(0, 1, mezclaInterval);
+  }
 });
 audio.addEventListener('pause', ()=>{
   setPlayIcon(false);
   document.getElementById('platter-group').classList.remove('spinning');
   document.getElementById('tonearm-group').classList.remove('playing');
+  saveLastPosition();
 });
 audio.addEventListener('loadedmetadata', ()=>{
   document.getElementById('seek').max = audio.duration || 0;
@@ -1157,6 +1374,13 @@ audio.addEventListener('timeupdate', ()=>{
   if(!seeking){
     document.getElementById('seek').value = audio.currentTime;
     document.getElementById('time-elapsed').textContent = fmtTime(audio.currentTime);
+  }
+  if(mezclaOn && !didFadeOut && audio.duration && queue.length>1){
+    const remaining = audio.duration - audio.currentTime;
+    if(remaining > 0 && remaining <= mezclaInterval){
+      didFadeOut = true;
+      fadeVolume(audio.volume, 0, Math.min(mezclaInterval, remaining));
+    }
   }
 });
 audio.addEventListener('ended', ()=>{
@@ -1244,6 +1468,49 @@ function goTo(screenId){
 }
 document.getElementById('player-back').addEventListener('click', ()=>goTo('screen-library'));
 
+/* ---------------- Vista del reproductor: Carátula / Tocadiscos ---------------- */
+function applyPlayerView(view){
+  document.getElementById('cover-view').classList.toggle('active', view==='cover');
+  document.getElementById('turntable-view').classList.toggle('active', view==='turntable');
+}
+document.querySelectorAll('.view-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.view-opt').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    storage.set('bobina_player_view', btn.dataset.view);
+    applyPlayerView(btn.dataset.view);
+  });
+});
+(function initPlayerView(){
+  const v = storage.get('bobina_player_view', 'cover');
+  document.querySelectorAll('.view-opt').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  applyPlayerView(v);
+})();
+
+/* ---------------- Nombre del artista: seleccionable y navega a sus canciones ---------------- */
+document.getElementById('np-artist').addEventListener('click', ()=>{
+  const song = queue.length && queueIndex>=0 ? songs[queue[queueIndex]] : null;
+  if(!song) return;
+  openArtistFullList(song.artist);
+});
+function openArtistFullList(artistName){
+  const idxs = songs.map((s,i)=>i).filter(i=>songs[i].artist===artistName);
+  goTo('screen-library');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-all').classList.add('active');
+  const allTab = document.querySelector('.tab[data-pane="pane-all"]');
+  if(allTab) allTab.classList.add('active');
+  document.getElementById('all-sort-row').style.display = 'none';
+  const rowsEl = document.getElementById('all-rows');
+  rowsEl.innerHTML = idxs.length
+    ? idxs.map(i=>songRowHTML(songs[i], i)).join('')
+    : `<div class="empty-state">No hay canciones de este artista en tu biblioteca.</div>`;
+  attachRowHandlers();
+  currentContextLabel = artistName;
+  activePlaylistQueue = idxs;
+}
+
 /* ---------------- Gear sheet: Artista / Similares ---------------- */
 document.getElementById('player-gear-btn').addEventListener('click', ()=>{
   renderGearSheet();
@@ -1266,13 +1533,17 @@ function renderGearSheet(){
   if(queue.length===0 || queueIndex<0) return;
   const current = songs[queue[queueIndex]];
 
-  // Pestaña artista: canciones descargadas de ese artista
+  // Pestaña artista: canciones descargadas de ese artista + copiar enlace de búsqueda
   const artistSongs = songs.map((s,i)=>({s,i})).filter(o=>o.s.artist===current.artist);
   const artistPane = document.getElementById('spane-artist');
   artistPane.innerHTML = `
-    <div class="similar-note">Mostrando lo que tienes descargado de <b>${escapeHtml(current.artist)}</b>. La info general del artista (biografía, discografía completa) requiere conexión a un catálogo en línea, que este reproductor local no consulta.</div>
+    <div class="qi" id="copy-artist-url" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; margin-bottom:12px; padding:12px 14px;">⎘ &nbsp; Copiar enlace de búsqueda del artista</div>
     ${artistSongs.map(o=>songRowHTML(o.s, o.i)).join('') || '<div class="empty-state">Solo tienes esta canción de este artista.</div>'}
   `;
+  document.getElementById('copy-artist-url').addEventListener('click', ()=>{
+    const url = 'https://music.youtube.com/search?q='+encodeURIComponent(current.artist);
+    copyToClipboard(url);
+  });
   artistPane.querySelectorAll('.song-row').forEach(row=>{
     row.addEventListener('click', ()=>{
       const idx = parseInt(row.dataset.idx,10);
@@ -1286,15 +1557,12 @@ function renderGearSheet(){
     btn.addEventListener('click',(e)=>{ e.stopPropagation(); openQuickMenu(songs[parseInt(btn.dataset.more,10)].key); });
   });
 
-  // Pestaña similares: heurística local (mismo álbum > mismo artista > mismo género)
-  const sameAlbum = songs.map((s,i)=>({s,i})).filter(o=>o.s.album===current.album && o.i!==queue[queueIndex]);
-  const sameArtist = songs.map((s,i)=>({s,i})).filter(o=>o.s.artist===current.artist && o.s.album!==current.album);
-  const sameGenre = songs.map((s,i)=>({s,i})).filter(o=>o.s.genre===current.genre && o.s.artist!==current.artist);
-  const combined = [...sameAlbum, ...sameArtist, ...sameGenre].slice(0,25);
+  // Pestaña similares: solamente canciones del mismo género
+  const sameGenre = songs.map((s,i)=>({s,i})).filter(o=>o.s.genre===current.genre && o.i!==queue[queueIndex]);
+  const combined = sameGenre.slice(0,25);
   const similarPane = document.getElementById('spane-similar');
   similarPane.innerHTML = `
-    <div class="similar-note">Basado en tu biblioteca local (mismo álbum, artista o género) — no en recomendaciones de YouTube Music, ya que este archivo no tiene conexión a esa cuenta.</div>
-    ${combined.map(o=>songRowHTML(o.s,o.i)).join('') || '<div class="empty-state">No hay suficientes canciones parecidas en tu biblioteca todavía.</div>'}
+    ${combined.map(o=>songRowHTML(o.s,o.i)).join('') || '<div class="empty-state">No hay más canciones de este género en tu biblioteca todavía.</div>'}
   `;
   similarPane.querySelectorAll('.song-row').forEach(row=>{
     row.addEventListener('click', ()=>{
@@ -1308,6 +1576,24 @@ function renderGearSheet(){
   similarPane.querySelectorAll('.row-more').forEach(btn=>{
     btn.addEventListener('click',(e)=>{ e.stopPropagation(); openQuickMenu(songs[parseInt(btn.dataset.more,10)].key); });
   });
+
+  // Pestaña historial: últimas 10 canciones reproducidas
+  const histItems = playHistory.map(k=>songs.findIndex(s=>s.key===k)).filter(i=>i>=0);
+  const historyPane = document.getElementById('spane-history');
+  historyPane.innerHTML = histItems.length
+    ? histItems.map(i=>songRowHTML(songs[i], i)).join('')
+    : `<div class="empty-state">Aún no hay historial de reproducción.</div>`;
+  historyPane.querySelectorAll('.song-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const idx = parseInt(row.dataset.idx,10);
+      currentContextLabel = 'Historial';
+      document.getElementById('gear-backdrop').classList.remove('active');
+      playFromQueue(histItems, histItems.indexOf(idx));
+    });
+  });
+  historyPane.querySelectorAll('.row-more').forEach(btn=>{
+    btn.addEventListener('click',(e)=>{ e.stopPropagation(); openQuickMenu(songs[parseInt(btn.dataset.more,10)].key); });
+  });
 }
 
 /* ---------------- Settings sheet ---------------- */
@@ -1315,25 +1601,31 @@ document.getElementById('settings-btn').addEventListener('click', ()=>document.g
 document.getElementById('settings-close').addEventListener('click', ()=>document.getElementById('settings-backdrop').classList.remove('active'));
 document.getElementById('settings-backdrop').addEventListener('click', (e)=>{ if(e.target.id==='settings-backdrop') e.currentTarget.classList.remove('active'); });
 
-const rememberSwitch = document.getElementById('remember-switch');
-const resumeSwitch = document.getElementById('resume-switch');
-rememberSwitch.classList.toggle('on', storage.get('bobina_remember', true));
-resumeSwitch.classList.toggle('on', storage.get('bobina_resume', true));
-rememberSwitch.addEventListener('click', ()=>{
-  const val = !rememberSwitch.classList.contains('on');
-  rememberSwitch.classList.toggle('on', val);
-  storage.set('bobina_remember', val);
+const mezclaSwitch = document.getElementById('mezcla-switch');
+mezclaSwitch.classList.toggle('on', mezclaOn);
+mezclaSwitch.addEventListener('click', ()=>{
+  mezclaOn = !mezclaSwitch.classList.contains('on');
+  mezclaSwitch.classList.toggle('on', mezclaOn);
+  storage.set('bobina_mezcla_on', mezclaOn);
 });
-resumeSwitch.addEventListener('click', ()=>{
-  const val = !resumeSwitch.classList.contains('on');
-  resumeSwitch.classList.toggle('on', val);
-  storage.set('bobina_resume', val);
+document.querySelectorAll('#mezcla-interval-row .filter-chip').forEach(chip=>{
+  chip.classList.toggle('active', parseInt(chip.dataset.sec,10)===mezclaInterval);
+  chip.addEventListener('click', ()=>{
+    mezclaInterval = parseInt(chip.dataset.sec,10);
+    storage.set('bobina_mezcla_interval', mezclaInterval);
+    document.querySelectorAll('#mezcla-interval-row .filter-chip').forEach(c=>c.classList.toggle('active', c===chip));
+  });
 });
 document.getElementById('wipe-btn').addEventListener('click', ()=>{
   playlists = [];
+  favorites = [];
+  playHistory = [];
   storage.set('bobina_playlists', playlists);
+  storage.set('bobina_favorites', favorites);
+  storage.set('bobina_history', playHistory);
   renderPlaylists();
-  showToast('Playlists borradas');
+  renderAll();
+  showToast('Datos borrados');
 });
 
 /* ---------------- Nueva playlist ---------------- */
@@ -1355,7 +1647,7 @@ document.getElementById('newpl-create').addEventListener('click', ()=>{
   showToast('Playlist creada');
 });
 function persistPlaylistsIfAllowed(){
-  if(rememberSwitch.classList.contains('on')) storage.set('bobina_playlists', playlists);
+  storage.set('bobina_playlists', playlists);
 }
 
 /* ---------------- Menú rápido de canción ---------------- */
