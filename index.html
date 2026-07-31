@@ -218,51 +218,32 @@ input[type=file]{display:none;}
 
 .art-wrap{
   flex:1; display:flex; align-items:center; justify-content:center;
-  min-height:0; padding:10px 0 18px;
+  min-height:0; padding:6px 0 18px;
 }
-.turntable{
-  position:relative; width:min(72vw, 300px); height:min(72vw,300px);
+.turntable-svg{
+  width:min(88vw, 360px); height:auto;
+  overflow:visible;
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,.45));
 }
-.disc{
-  width:100%; height:100%; border-radius:50%;
-  background:var(--surface-2);
-  border:10px solid var(--surface);
-  box-shadow:0 14px 40px rgba(0,0,0,.5), inset 0 0 0 1px var(--line);
-  overflow:hidden;
-  display:flex; align-items:center; justify-content:center;
-  animation:spin 14s linear infinite paused;
+#platter-group{
+  transform-origin:230px 150px;
+  animation:spin 12s linear infinite paused;
 }
-.disc.spinning{animation-play-state:running;}
-.disc img{width:100%;height:100%;object-fit:cover;}
-.disc .fallback-note{font-size:44px; color:var(--amber-dim);}
-.disc::after{
-  content:""; position:absolute; width:16px; height:16px; border-radius:50%;
-  background:var(--bg); border:2px solid var(--amber-dim);
+#platter-group.spinning{animation-play-state:running;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+#tonearm-group{
+  transform-origin:337px 76px;
+  transform:rotate(-36deg);
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
 }
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.tonearm-base{
-  position:absolute; top:0px; right:0px;
-  width:18px; height:18px; border-radius:50%;
-  background:var(--surface); border:2px solid var(--amber-dim);
-  z-index:3;
-}
-.tonearm{
-  position:absolute; top:3px; right:7px;
-  width:9px; height:46%; border-radius:5px 5px 3px 3px;
-  background:linear-gradient(var(--surface-2), var(--surface));
-  border:1px solid var(--line);
-  transform-origin:top center; transform:rotate(-54deg);
-  transition:transform .45s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 3px 8px rgba(0,0,0,.35);
-  z-index:2;
-}
-.tonearm.playing{transform:rotate(-16deg);}
-.tonearm::after{
-  content:""; position:absolute; bottom:-3px; left:50%; transform:translateX(-50%);
-  width:18px; height:11px; border-radius:3px; background:var(--amber);
-  transition:box-shadow .3s ease;
-}
-.tonearm.playing::after{box-shadow:0 0 10px 2px rgba(232,163,61,.55);}
+#tonearm-group.playing{transform:rotate(0deg);}
+#headshell-tip{transition:filter .3s ease;}
+#tonearm-group.playing #headshell-tip{filter:drop-shadow(0 0 5px rgba(232,163,61,.75));}
+#album-art-img{opacity:0;}
+#album-art-img.has-art{opacity:1;}
+#label-fallback{opacity:1;}
+#label-fallback.has-art{opacity:0;}
+.pitch-handle{transition:transform .2s ease;}
 
 .track-info{text-align:center; padding:0 6px 6px;}
 .track-info .title{font-size:20px; font-weight:700; letter-spacing:-0.01em; margin:0 0 4px;}
@@ -283,6 +264,16 @@ input[type=file]{display:none;}
 .time-row{display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); margin-top:6px;}
 
 .controls{display:flex; align-items:center; justify-content:space-between; padding:16px 4px 6px;}
+.fav-row{display:flex; justify-content:center; padding:2px 0 8px;}
+.fav-pill{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 20px; border-radius:999px;
+  background:var(--surface-2); border:1px solid var(--line);
+  color:var(--cream); font-size:13.5px; font-weight:600;
+}
+.fav-pill span:first-child{font-size:17px; color:var(--muted);}
+.fav-pill.on{background:rgba(196,98,45,0.15); border-color:var(--rust);}
+.fav-pill.on span:first-child{color:var(--rust);}
 .ctrl-side{display:flex; gap:14px; align-items:center;}
 .ctrl-btn{
   width:42px; height:42px; border-radius:50%;
@@ -456,13 +447,54 @@ svg{display:block;}
     </div>
 
     <div class="art-wrap">
-      <div class="turntable">
-        <div class="tonearm-base"></div>
-        <div class="tonearm" id="tonearm"></div>
-        <div class="disc" id="disc">
-          <div class="fallback-note" id="disc-fallback">♪</div>
-        </div>
-      </div>
+      <svg class="turntable-svg" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <clipPath id="labelClip"><ellipse cx="230" cy="150" rx="52" ry="38"/></clipPath>
+        </defs>
+
+        <!-- base / plinth -->
+        <polygon points="55,190 205,258 385,175 235,110" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+        <polygon points="55,190 205,258 205,278 55,210" fill="#0e0c09"/>
+        <polygon points="205,258 385,175 385,195 205,278" fill="#0e0c09"/>
+        <ellipse cx="90" cy="203" rx="10" ry="6" fill="#0e0c09"/>
+        <ellipse cx="90" cy="211" rx="10" ry="6" fill="#0e0c09"/>
+        <ellipse cx="350" cy="185" rx="10" ry="6" fill="#0e0c09"/>
+        <ellipse cx="350" cy="193" rx="10" ry="6" fill="#0e0c09"/>
+
+        <!-- pitch fader -->
+        <rect x="290" y="130" width="14" height="55" rx="4" fill="var(--surface-2)" stroke="var(--line)"/>
+        <line x1="297" y1="136" x2="297" y2="179" stroke="var(--line)" stroke-width="1"/>
+        <rect class="pitch-handle" x="286" y="152" width="22" height="7" rx="2" fill="var(--amber-dim)"/>
+
+        <!-- start button + light -->
+        <circle cx="110" cy="150" r="9" fill="var(--surface-2)" stroke="var(--line)"/>
+        <circle cx="110" cy="120" r="5" fill="var(--rust)" opacity="0.85"/>
+
+        <!-- platter (vinyl) -->
+        <g id="platter-group">
+          <ellipse cx="230" cy="150" rx="148" ry="108" fill="var(--surface-2)" stroke="var(--line)" stroke-width="2"/>
+          <ellipse cx="230" cy="150" rx="148" ry="108" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <ellipse cx="230" cy="150" rx="128" ry="93" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <ellipse cx="230" cy="150" rx="108" ry="79" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <ellipse cx="230" cy="150" rx="88" ry="64" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <ellipse cx="230" cy="150" rx="68" ry="50" fill="none" stroke="var(--line)" stroke-width="1" stroke-dasharray="1 6"/>
+          <ellipse cx="230" cy="150" rx="55" ry="40" fill="var(--surface)" stroke="var(--amber-dim)" stroke-width="2"/>
+          <text id="label-fallback" x="230" y="160" text-anchor="middle" font-size="30" fill="var(--amber-dim)">♪</text>
+          <image id="album-art-img" x="178" y="112" width="104" height="76" clip-path="url(#labelClip)" preserveAspectRatio="xMidYMid slice"></image>
+          <circle cx="230" cy="150" r="4" fill="var(--bg)" stroke="var(--amber-dim)" stroke-width="1.5"/>
+        </g>
+
+        <!-- tonearm -->
+        <g id="tonearm-group">
+          <circle cx="337" cy="76" r="15" fill="var(--surface-2)" stroke="var(--amber-dim)" stroke-width="2"/>
+          <rect x="330" y="55" width="14" height="14" rx="3" fill="var(--surface)" stroke="var(--line)"/>
+          <path d="M337,76 C 305,88 268,102 300,125" fill="none" stroke="var(--surface-2)" stroke-width="7" stroke-linecap="round"/>
+          <g transform="translate(300,125) rotate(-18)">
+            <rect x="-4" y="-6" width="20" height="12" rx="2" fill="var(--amber)"/>
+            <rect id="headshell-tip" x="14" y="-2" width="5" height="6" rx="1" fill="var(--rust)"/>
+          </g>
+        </g>
+      </svg>
     </div>
 
     <div class="track-info">
@@ -496,6 +528,12 @@ svg{display:block;}
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
+    </div>
+
+    <div class="fav-row">
+      <button class="fav-pill" id="player-fav-btn">
+        <span id="player-fav-icon">♡</span> <span id="player-fav-label">Agregar a favoritas</span>
+      </button>
     </div>
   </div>
 
@@ -1010,7 +1048,23 @@ function toggleFavorite(key){
   else { favorites.push(key); showToast('Agregada a favoritas'); }
   storage.set('bobina_favorites', favorites);
   renderAll();
+  updatePlayerFavButton();
 }
+
+function updatePlayerFavButton(){
+  const btn = document.getElementById('player-fav-btn');
+  const song = queue.length && queueIndex>=0 ? songs[queue[queueIndex]] : null;
+  if(!song){ btn.classList.remove('on'); return; }
+  const isFav = favorites.includes(song.key);
+  btn.classList.toggle('on', isFav);
+  document.getElementById('player-fav-icon').textContent = isFav ? '♥' : '♡';
+  document.getElementById('player-fav-label').textContent = isFav ? 'En tus favoritas' : 'Agregar a favoritas';
+}
+document.getElementById('player-fav-btn').addEventListener('click', ()=>{
+  const song = queue.length && queueIndex>=0 ? songs[queue[queueIndex]] : null;
+  if(!song) return;
+  toggleFavorite(song.key);
+});
 
 /* ---------------- Tabs ---------------- */
 document.querySelectorAll('.tab').forEach(tab=>{
@@ -1053,15 +1107,20 @@ function loadCurrent(){
   document.getElementById('np-artist').textContent = song.artist;
   document.getElementById('np-album').textContent = song.album;
   document.getElementById('player-context-lbl').textContent = currentContextLabel;
-  const disc = document.getElementById('disc');
-  const fallback = document.getElementById('disc-fallback');
+  const artImg = document.getElementById('album-art-img');
+  const fallback = document.getElementById('label-fallback');
   if(song.picture){
-    disc.innerHTML = `<img src="${song.picture}" alt="">`;
+    artImg.setAttributeNS('http://www.w3.org/1999/xlink','href', song.picture);
+    artImg.classList.add('has-art');
+    fallback.classList.add('has-art');
   } else {
-    disc.innerHTML = '<div class="fallback-note">♪</div>';
+    artImg.removeAttributeNS('http://www.w3.org/1999/xlink','href');
+    artImg.classList.remove('has-art');
+    fallback.classList.remove('has-art');
   }
   updateMiniPlayer(song);
   markPlayingRow(song.key);
+  updatePlayerFavButton();
 }
 
 function markPlayingRow(key){
@@ -1082,13 +1141,13 @@ function updateMiniPlayer(song){
 
 audio.addEventListener('play', ()=>{
   setPlayIcon(true);
-  document.getElementById('disc').classList.add('spinning');
-  document.getElementById('tonearm').classList.add('playing');
+  document.getElementById('platter-group').classList.add('spinning');
+  document.getElementById('tonearm-group').classList.add('playing');
 });
 audio.addEventListener('pause', ()=>{
   setPlayIcon(false);
-  document.getElementById('disc').classList.remove('spinning');
-  document.getElementById('tonearm').classList.remove('playing');
+  document.getElementById('platter-group').classList.remove('spinning');
+  document.getElementById('tonearm-group').classList.remove('playing');
 });
 audio.addEventListener('loadedmetadata', ()=>{
   document.getElementById('seek').max = audio.duration || 0;
